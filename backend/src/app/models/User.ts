@@ -20,9 +20,6 @@ class User {
   @Column('varchar')
   password: string;
 
-  @Column('timestamp with time zone')
-  date: Date;
-
   @CreateDateColumn()
   created_at: Date;
 
