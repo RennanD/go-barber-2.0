@@ -1,3 +1,7 @@
 node_modules
-
+build/
+.idea/
+.vscode/
+tmp/uploads/*
+!tmp/uploads/.gitkeep
 *-error.log
