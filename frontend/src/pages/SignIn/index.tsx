@@ -12,7 +12,7 @@ import logoImg from '../../assets/logo.svg';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
-import { useAuth } from '../../hooks';
+import { useAuth, useToast } from '../../hooks';
 
 import getValidationErros from '../../utils/getValidationErros';
 
@@ -23,6 +23,7 @@ interface SignInRequest {
 
 const SignIn: React.FC = () => {
   const { signIn } = useAuth();
+  const { addToast } = useToast();
 
   const formRef = useRef<FormHandles>(null);
 
@@ -42,17 +43,30 @@ const SignIn: React.FC = () => {
           abortEarly: false,
         });
 
-        signIn({
+        await signIn({
           email,
           password,
         });
-      } catch (err) {
-        const errors = getValidationErros(err);
 
-        formRef.current?.setErrors(errors);
+        addToast({
+          title: 'Sucesso',
+          type: 'success',
+          description: 'Deu certo viado',
+        });
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErros(err);
+          formRef.current?.setErrors(errors);
+        } else {
+          addToast({
+            title: 'Erro no login',
+            type: 'error',
+            description: 'Foi um error doido aí',
+          });
+        }
       }
     },
-    [signIn],
+    [addToast, signIn],
   );
 
   return (
