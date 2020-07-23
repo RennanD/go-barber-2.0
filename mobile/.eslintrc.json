@@ -30,7 +30,10 @@
     ],
     "rules": {
       "prettier/prettier": "error",
+      "implicit-arrow-linebreak": "off",
+      "operator-linebreak": "off",
       "arrow-parens": "off",
+      "no-unused-expressions": "off",
       "object-curly-newline": "off",
       "react/jsx-props-no-spreading": "off",
       "react-hooks/rules-of-hooks": "error",
