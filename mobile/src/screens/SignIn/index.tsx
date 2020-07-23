@@ -29,6 +29,8 @@ import {
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
+import { useAuth } from '../../hooks';
+
 import logoImage from '../../assets/images/logo.png';
 
 import getValidationErros from '../../utils/getValidationErros';
@@ -40,41 +42,45 @@ interface SignInRequest {
 
 const SignIn: React.FC = () => {
   const { navigate } = useNavigation();
+  const { signIn } = useAuth();
 
   const formRef = useRef<FormHandles>(null);
   const passwordInputRef = useRef<TextInput>(null);
 
   const [showKeyboard, setShowKeyboard] = useState(false);
 
-  const handleSignIn = useCallback(async (data: SignInRequest) => {
-    formRef.current?.setErrors({});
+  const handleSignIn = useCallback(
+    async (data: SignInRequest) => {
+      formRef.current?.setErrors({});
 
-    const { email, password } = data;
+      const { email, password } = data;
 
-    const schema = Yup.object().shape({
-      email: Yup.string().required('E-mail obrigatório.').email(),
-      password: Yup.string().required('Senha obrigatória.'),
-    });
-
-    try {
-      await schema.validate(data, {
-        abortEarly: false,
+      const schema = Yup.object().shape({
+        email: Yup.string().required('E-mail obrigatório.').email(),
+        password: Yup.string().required('Senha obrigatória.'),
       });
 
-      // await signIn({
-      //   email,
-      //   password,
-      // });
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const errors = getValidationErros(err);
-        formRef.current?.setErrors(errors);
-        return;
-      }
+      try {
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-      Alert.alert('Erro', 'Erro ao fazer login, tente novamente');
-    }
-  }, []);
+        await signIn({
+          email,
+          password,
+        });
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErros(err);
+          formRef.current?.setErrors(errors);
+          return;
+        }
+        console.log(err.response.data);
+        Alert.alert('Erro', 'Erro ao fazer login, tente novamente');
+      }
+    },
+    [signIn],
+  );
 
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', () => setShowKeyboard(true));
