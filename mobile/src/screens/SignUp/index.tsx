@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {
   Image,
   KeyboardAvoidingView,
@@ -9,6 +9,9 @@ import {
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
+
+import { Form } from '@unform/mobile';
+import { FormHandles } from '@unform/core';
 
 import Icon from 'react-native-vector-icons/Feather';
 
@@ -23,6 +26,8 @@ const SignUp: React.FC = () => {
   const { goBack } = useNavigation();
   const [showKeyboard, setShowKeyboard] = useState(false);
 
+  const formRef = useRef<FormHandles>(null);
+
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', () => setShowKeyboard(true));
     Keyboard.addListener('keyboardDidHide', () => setShowKeyboard(false));
@@ -31,6 +36,10 @@ const SignUp: React.FC = () => {
       Keyboard.removeListener('keyboardDidShow', () => setShowKeyboard(true));
       Keyboard.removeListener('keyboardDidHide', () => setShowKeyboard(false));
     };
+  }, []);
+
+  const handleSubmit = useCallback((data: obejec) => {
+    console.log(data);
   }, []);
 
   return (
@@ -48,15 +57,26 @@ const SignUp: React.FC = () => {
         >
           <Container>
             <Image source={logoImage} />
+
             <View>
               <Title>Cire ua conta</Title>
             </View>
 
-            <Input name="name" icon="user" placeholder="Senha" />
+            <Form
+              ref={formRef}
+              style={{ width: '100%' }}
+              onSubmit={handleSubmit}
+            >
+              <Input name="name" icon="user" placeholder="Senha" />
 
-            <Input name="email" icon="mail" placeholder="E-mail" />
-            <Input name="password" icon="lock" placeholder="Senha" />
-            <Button>Entrar</Button>
+              <Input name="email" icon="mail" placeholder="E-mail" />
+
+              <Input name="password" icon="lock" placeholder="Senha" />
+
+              <Button onPress={() => formRef.current?.submitForm()}>
+                Entrar
+              </Button>
+            </Form>
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
   Image,
   KeyboardAvoidingView,
@@ -7,6 +7,9 @@ import {
   ScrollView,
   Keyboard,
 } from 'react-native';
+
+import { Form } from '@unform/mobile';
+import { FormHandles } from '@unform/core';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -29,7 +32,13 @@ import logoImage from '../../assets/images/logo.png';
 const SignIn: React.FC = () => {
   const { navigate } = useNavigation();
 
+  const formRef = useRef<FormHandles>(null);
+
   const [showKeyboard, setShowKeyboard] = useState(false);
+
+  const handleSignIn = useCallback((data: object) => {
+    console.log(data);
+  }, []);
 
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', () => setShowKeyboard(true));
@@ -56,13 +65,24 @@ const SignIn: React.FC = () => {
         >
           <Container>
             <Image source={logoImage} />
+
             <View>
               <Title>Faça seu logon</Title>
             </View>
 
-            <Input name="email" icon="mail" placeholder="E-mail" />
-            <Input name="password" icon="lock" placeholder="Senha" />
-            <Button>Entrar</Button>
+            <Form
+              style={{ width: '100%' }}
+              ref={formRef}
+              onSubmit={handleSignIn}
+            >
+              <Input name="email" icon="mail" placeholder="E-mail" />
+
+              <Input name="password" icon="lock" placeholder="Senha" />
+
+              <Button onPress={() => formRef.current?.submitForm()}>
+                Entrar
+              </Button>
+            </Form>
 
             <ForgotPassword>
               <ForgotPasswordText>Esqueci minha senha</ForgotPasswordText>
