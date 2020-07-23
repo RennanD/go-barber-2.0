@@ -25,6 +25,7 @@ import Button from '../../components/Button';
 
 import logoImage from '../../assets/images/logo.png';
 
+import api from '../../services/api';
 import getValidationErros from '../../utils/getValidationErros';
 
 interface SignUpFormData {
@@ -51,32 +52,43 @@ const SignUp: React.FC = () => {
     };
   }, []);
 
-  const handleSignUp = useCallback(async (data: SignUpFormData) => {
-    try {
-      formRef.current?.setErrors({});
+  const handleSignUp = useCallback(
+    async (data: SignUpFormData) => {
+      try {
+        formRef.current?.setErrors({});
 
-      const schema = Yup.object().shape({
-        name: Yup.string().required('O nome é obrigatótio.'),
-        email: Yup.string()
-          .required('O e-mail é obrigatório.')
-          .email('Insira um e-mail válido.'),
-        password: Yup.string().min(6, 'no mínimo 6 dígitos'),
-      });
+        const schema = Yup.object().shape({
+          name: Yup.string().required('O nome é obrigatótio.'),
+          email: Yup.string()
+            .required('O e-mail é obrigatório.')
+            .email('Insira um e-mail válido.'),
+          password: Yup.string().min(6, 'no mínimo 6 dígitos'),
+        });
 
-      await schema.validate(data, {
-        abortEarly: false,
-      });
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-      // await api.post('/users', data);
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const errors = getValidationErros(err);
-        formRef.current?.setErrors(errors);
-      } else {
-        Alert.alert('Erro', 'Erro ao criar conta');
+        await api.post('/users', data);
+
+        Alert.alert(
+          'Sucesso',
+          'Conta criada com sucesso, você já pode logar na aplicação',
+        );
+
+        goBack();
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErros(err);
+          formRef.current?.setErrors(errors);
+        } else {
+          console.log(err);
+          Alert.alert('Erro', 'Erro ao criar conta');
+        }
       }
-    }
-  }, []);
+    },
+    [goBack],
+  );
 
   return (
     <>
