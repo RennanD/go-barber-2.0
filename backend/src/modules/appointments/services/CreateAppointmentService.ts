@@ -5,7 +5,7 @@ import { startOfHour } from 'date-fns';
 import AppError from '@shared/errors/AppError';
 
 import Appointment from '../infra/typeorm/entities/Appointment';
-import AppointmentsRespository from '../repositories/AppointmentsRepository';
+import AppointmentsRespository from '../infra/typeorm/repositories/AppointmentsRepository';
 
 interface Request {
   provider_id: string;
