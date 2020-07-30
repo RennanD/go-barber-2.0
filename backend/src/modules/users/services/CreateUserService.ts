@@ -16,7 +16,7 @@ interface IRequest {
 class CreateUserService {
   constructor(
     @inject('UsersRepository')
-    private usersRepository: IUserRepository
+    private usersRepository: IUserRepository,
   ) {}
 
   public async execute({ name, email, password }: IRequest): Promise<User> {
