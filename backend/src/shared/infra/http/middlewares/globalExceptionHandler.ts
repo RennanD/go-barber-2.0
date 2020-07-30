@@ -8,6 +8,7 @@ export default function globalExceptionHandler(
   response: Response,
   _: NextFunction
 ): Response {
+  console.log(err)
   if (err instanceof AppError) {
     response.status(err.statusCode).json({
       status: 'error',
