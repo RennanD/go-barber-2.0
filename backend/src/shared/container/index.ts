@@ -8,10 +8,10 @@ import UsersRepository from '@modules/users/infra/typeorm/repositories/UsersRepo
 
 container.registerSingleton<IAppointmentsRepository>(
   'AppointmentsRepository',
-  AppointmentsRepository
+  AppointmentsRepository,
 );
 
 container.registerSingleton<IUserRepository>(
   'UsersRepository',
-  UsersRepository
+  UsersRepository,
 );
